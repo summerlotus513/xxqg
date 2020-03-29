@@ -23,7 +23,14 @@ namespace XXQGAns.Properties {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
-        
+        internal static byte[] Snapshot
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("Snapshot", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;

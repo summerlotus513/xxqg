@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Win32;
 using MySql.Data.MySqlClient;
 
 namespace XXQGAns
@@ -17,19 +18,22 @@ namespace XXQGAns
         public login()
         {
             InitializeComponent();
-            string connetStr = "server=IP;user=user;password=passwd;database=xxqg;sslMode=none;";
+            string connetStr = "server=IP;user=xxqg;password=passwd;database=xxqg;sslMode=none;";
             //MySqlConnection conn = new MySqlConnection(connetStr);
             SQLCon = new MySqlConnection(connetStr);
             try
             {
                 SQLCon.Open();//打开通道，建立连接
-                string version = "select * from version where version ='1.0.326.1'";
+                string programversion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                string version = "select * from version where version ='"+programversion+"'";
                 MySqlCommand commm = new MySqlCommand(version, SQLCon);
                 MySqlDataReader versiondr = commm.ExecuteReader();
+                
                 if (versiondr.Read())
                 {
                 }
-                else { MessageBox.Show("软件有新版本更新!\n请前往官网下载最新版本！\n当前版本可正常使用！");
+                else {
+                    MessageBox.Show("软件有新版本更新!\n请前往官网下载最新版本！\n当前版本可正常使用！");
                     SQLCon.Close();
                 }
             }
@@ -52,9 +56,26 @@ namespace XXQGAns
                 this.button1_Click(sender, e);//触发按钮事件
             }
         }
+        private void login_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                RegistryKey regkey = Registry.CurrentUser.OpenSubKey("xxqguser");
+                if (regkey != null)
+                {
+                    user.Text = regkey.GetValue("UserName").ToString();
+                    passwd.Text = regkey.GetValue("Passwd").ToString();
+                    regkey.Close();
+                }
+            }
+
+            catch (Exception)
+            {
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
-            string connetStr = "server=IP;user=user;password=passwd;database=xxqg;sslMode=none;";
+            string connetStr = "server=IP;user=xxqg;password=passwd;database=xxqg;sslMode=none;";
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
             {
@@ -67,6 +88,21 @@ namespace XXQGAns
                 if (dr.Read())
                 {
                     this.Hide();  //登录成功后，隐藏该页面
+                    if (checkBox1.CheckState == CheckState.Checked)
+                    {
+                        RegistryKey regkey = Registry.CurrentUser.CreateSubKey("xxqguser");
+                        regkey.SetValue("UserName", user.Text);
+                        regkey.SetValue("Passwd", passwd.Text);
+                        regkey.Close();
+                    }
+                    else
+                    {
+                        RegistryKey regkey = Registry.CurrentUser.OpenSubKey("xxqguser", true);
+                        regkey.DeleteValue("UserName");
+                        regkey.DeleteValue("Passwd");
+                        regkey.Close();
+                    }
+                    
                     main m = new main(); //new到另一个面板
                     m.ShowDialog();  //展示登录后的面板
                 }
