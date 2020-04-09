@@ -1,4 +1,5 @@
 # 学习强国挑战答题神器
+## 更新一键积分任务完成，手机端访问点击“下载安卓脚本&软件”下载“XXQGAUTO_v2.0.1.apk”即可  
 ## 学习强国挑战答题神器 成品下载 https://qg.zyqq.top  
 ## 软件使用C#编写，实现连接数据库查找题库
 部署自己服务器请修改login.cs main.cs中的字符串server=IP;user=user;password=passwd;database=xxqg;sslMode=none;中内容为你服务器对应数据库  
